@@ -1,10 +1,11 @@
 import {
   Container,
+  FlexRow,
+  SearchButton,
+  SearchInput,
   Spinner,
-  StatusBadge,
   Table,
   TableBodyWrapper,
-  TableCell,
   TableHeader,
   TableHeaderWrapper,
   TableRow,
@@ -13,19 +14,54 @@ import {
 } from './components';
 import { I18N } from '../constants/i18n';
 import { usePayment } from '../hooks/usePayment';
-import { formattedDate } from '../utils/formattedDate';
-import { formattedCurrency } from '../utils/formattedCurrency';
+import { useState, useDeferredValue } from 'react';
+import { FetchPaymentsParams } from '../services/api/payments.types';
+import { PaymentRows } from './PaymentRows';
 
 export const PaymentsPage = () => {
-  const { data, isLoading } = usePayment({ page: 1, pageSize: 5 });
+  const [filters, setFilters] = useState<FetchPaymentsParams>({
+    page: 1,
+    pageSize: 5,
+    search: '',
+  });
 
-  if (isLoading) return <Spinner />;
+  const [search, setSearch] = useState('');
+
+  // If the network/rendering is slow, this lags behind the raw filters
+  const deferredFilters = useDeferredValue(filters);
+
+  // 3. Fetch data using the DEFERRED filters
+  const { data, isLoading } = usePayment(deferredFilters);
 
   const payments = data?.payments;
 
   return (
     <Container>
       <Title>{I18N.PAGE_TITLE}</Title>
+
+      <FlexRow>
+        <label htmlFor='payment-search' className='sr-only'>
+          {I18N.SEARCH_LABEL}
+        </label>
+        <SearchInput
+          type='text'
+          id='payment-search'
+          name='payment-search'
+          role='searchbox'
+          aria-describedby='search-hint'
+          placeholder={I18N.SEARCH_PLACEHOLDER}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <span id='search-hint' className='sr-only'>
+          {I18N.SEARCH_PLACEHOLDER}
+        </span>
+
+        <SearchButton onClick={() => setFilters({ ...filters, search })}>
+          {I18N.SEARCH_BUTTON}
+        </SearchButton>
+      </FlexRow>
+
       <TableWrapper>
         <Table>
           <TableHeaderWrapper>
@@ -40,28 +76,7 @@ export const PaymentsPage = () => {
           </TableHeaderWrapper>
 
           <TableBodyWrapper>
-            {payments && payments.length > 0 ? (
-              payments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>{payment.id}</TableCell>
-                  <TableCell>{formattedDate(payment.date)}</TableCell>
-                  <TableCell>{formattedCurrency(payment.amount)}</TableCell>
-                  <TableCell>{payment.customerName || '—'}</TableCell>
-                  <TableCell>{payment.currency}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={payment.status}>
-                      {payment.status}
-                    </StatusBadge>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={6} style={{ textAlign: 'center' }}>
-                  {I18N.NO_PAYMENTS_FOUND}
-                </TableCell>
-              </TableRow>
-            )}
+            {isLoading ? <Spinner /> : <PaymentRows payments={payments} />}
           </TableBodyWrapper>
         </Table>
       </TableWrapper>

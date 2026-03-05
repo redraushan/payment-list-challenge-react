@@ -7,5 +7,6 @@ export const usePayment = (params: FetchPaymentsParams) => {
   return useQuery({
     queryKey: paymentsKeys.list(params),
     queryFn: () => fetchPayment(params),
+    placeholderData: (previousData) => previousData,
   });
 };
