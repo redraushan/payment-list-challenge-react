@@ -1,10 +1,6 @@
+import { defineQueryKeys, key } from 'react-query-key-manager';
 import { FetchPaymentsParams } from './payments.types';
 
-export const paymentsKeys = {
-  all: ['payments'] as const,
-
-  lists: () => [...paymentsKeys.all, 'list'] as const,
-
-  list: (params: FetchPaymentsParams) =>
-    [...paymentsKeys.lists(), params] as const,
-};
+export const paymentsKeys = defineQueryKeys('payments', {
+  list: key((params: FetchPaymentsParams) => ['payments', 'list', params]),
+});

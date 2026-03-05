@@ -26,6 +26,7 @@
     "date-fns": "^4.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-query-key-manager": "^0.0.2",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {
