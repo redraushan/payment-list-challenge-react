@@ -12,5 +12,6 @@ export const usePayment = (params: FetchPaymentsParams) => {
     queryKey: paymentsKeys.list(params),
     queryFn: () => fetchPayment(params),
     placeholderData: (previousData) => previousData,
+    refetchOnWindowFocus: true,
   });
 };
