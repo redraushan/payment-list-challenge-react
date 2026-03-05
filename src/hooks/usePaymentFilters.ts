@@ -1,4 +1,4 @@
-import { FormEvent, useDeferredValue, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Currency, FetchPaymentsParams } from '../services/api/payments.types';
 
 export const defaultPaymentFilters: FetchPaymentsParams = {
@@ -8,15 +8,16 @@ export const defaultPaymentFilters: FetchPaymentsParams = {
   currency: '',
 };
 
-// 1. Check if ANY filter is different from its default
+// Check if ANY filter is different from its default
 const isAnyFilterApplied = (filters: FetchPaymentsParams) =>
   Object.keys(filters).some((key) => {
-    if (key === 'page') return filters.page !== defaultPaymentFilters.page;
-    if (key === 'pageSize')
-      return filters.page !== defaultPaymentFilters.pageSize;
-    if (key === 'search')
-      return filters.search !== defaultPaymentFilters.search;
-    if (key === 'currency')
+    const k = key as keyof FetchPaymentsParams;
+
+    if (k === 'page') return filters.page !== defaultPaymentFilters.page;
+    if (k === 'pageSize')
+      return filters.pageSize !== defaultPaymentFilters.pageSize;
+    if (k === 'search') return filters.search !== defaultPaymentFilters.search;
+    if (k === 'currency')
       return filters.currency !== defaultPaymentFilters.currency;
 
     return false;
@@ -31,9 +32,6 @@ export const usePaymentFilters = () => {
   });
 
   const [search, setSearch] = useState('');
-
-  // If the network/rendering is slow, this lags behind the raw filters
-  const deferredFilters = useDeferredValue(filters);
 
   const isFilterApplied = isAnyFilterApplied(filters);
 
@@ -51,7 +49,7 @@ export const usePaymentFilters = () => {
     setFilters(defaultPaymentFilters);
   };
   return {
-    filters: deferredFilters,
+    filters,
     search,
     isFilterApplied,
     setSearch,
