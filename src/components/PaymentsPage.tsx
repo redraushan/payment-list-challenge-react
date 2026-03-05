@@ -2,12 +2,12 @@ import {
   ClearButton,
   Container,
   FilterRow,
-  FlexRow,
   SearchButton,
   SearchInput,
   Spinner,
   Table,
   TableBodyWrapper,
+  TableCell,
   TableHeader,
   TableHeaderWrapper,
   TableRow,
@@ -18,6 +18,7 @@ import { I18N } from '../constants/i18n';
 import { usePayment } from '../hooks/usePayment';
 import { PaymentRows } from './PaymentRows';
 import { usePaymentFilters } from '../hooks/usePaymentFilters';
+import { PaymentErrors } from './PaymentErrors';
 
 export const PaymentsPage = () => {
   const {
@@ -28,8 +29,9 @@ export const PaymentsPage = () => {
     handleSearch,
     isFilterApplied,
   } = usePaymentFilters();
-  const { data, isLoading } = usePayment(filters);
+  const { data, isLoading, isError, error } = usePayment(filters);
 
+  console.log({ isError, error });
   const payments = data?.payments;
 
   return (
@@ -65,24 +67,36 @@ export const PaymentsPage = () => {
         </FilterRow>
       </form>
 
-      <TableWrapper>
-        <Table>
-          <TableHeaderWrapper>
-            <TableRow>
-              <TableHeader>{I18N.TABLE_HEADER_PAYMENT_ID}</TableHeader>
-              <TableHeader>{I18N.TABLE_HEADER_DATE}</TableHeader>
-              <TableHeader>{I18N.TABLE_HEADER_AMOUNT}</TableHeader>
-              <TableHeader>{I18N.TABLE_HEADER_CUSTOMER}</TableHeader>
-              <TableHeader>{I18N.TABLE_HEADER_CURRENCY}</TableHeader>
-              <TableHeader>{I18N.TABLE_HEADER_STATUS}</TableHeader>
-            </TableRow>
-          </TableHeaderWrapper>
+      {isError ? (
+        <PaymentErrors error={error} />
+      ) : (
+        <TableWrapper>
+          <Table>
+            <TableHeaderWrapper>
+              <TableRow>
+                <TableHeader>{I18N.TABLE_HEADER_PAYMENT_ID}</TableHeader>
+                <TableHeader>{I18N.TABLE_HEADER_DATE}</TableHeader>
+                <TableHeader>{I18N.TABLE_HEADER_AMOUNT}</TableHeader>
+                <TableHeader>{I18N.TABLE_HEADER_CUSTOMER}</TableHeader>
+                <TableHeader>{I18N.TABLE_HEADER_CURRENCY}</TableHeader>
+                <TableHeader>{I18N.TABLE_HEADER_STATUS}</TableHeader>
+              </TableRow>
+            </TableHeaderWrapper>
 
-          <TableBodyWrapper>
-            {isLoading ? <Spinner /> : <PaymentRows payments={payments} />}
-          </TableBodyWrapper>
-        </Table>
-      </TableWrapper>
+            <TableBodyWrapper>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className='text-center'>
+                    <Spinner />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <PaymentRows payments={payments} />
+              )}
+            </TableBodyWrapper>
+          </Table>
+        </TableWrapper>
+      )}
     </Container>
   );
 };

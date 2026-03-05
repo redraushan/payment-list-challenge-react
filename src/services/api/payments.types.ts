@@ -1,3 +1,5 @@
+import { AxiosError } from 'axios';
+
 export type PaymentStatus = 'completed' | 'pending' | 'failed';
 
 export interface Payment {
@@ -44,3 +46,10 @@ export type Currency =
   | 'ZAR'
   | 'JPY'
   | 'CZK';
+
+export interface ApiError {
+  message: string;
+  code: string;
+}
+
+export type FetchPaymentError = AxiosError<ApiError>;
