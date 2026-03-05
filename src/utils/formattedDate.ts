@@ -1,5 +1,10 @@
-import { format } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 
 export const formattedDate = (date: string) => {
-  return format(new Date(date), 'dd/MM/yyyy, HH:mm:ss');
+  if (!date) return '-';
+
+  const parsed = parseISO(date);
+  if (!isValid(parsed)) return 'Invalid Date';
+
+  return format(parsed, 'dd/MM/yyyy, HH:mm:ss');
 };

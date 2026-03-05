@@ -15,8 +15,8 @@ export const PaymentRows = ({ payments }: PaymentRowsProps) => {
         <TableCell>{payment.id}</TableCell>
         <TableCell>{formattedDate(payment.date)}</TableCell>
         <TableCell>{formattedCurrency(payment.amount)}</TableCell>
-        <TableCell>{payment.customerName || '—'}</TableCell>
-        <TableCell>{payment.currency}</TableCell>
+        <TableCell>{payment.customerName || I18N.EMPTY_CUSTOMER}</TableCell>
+        <TableCell>{payment.currency || I18N.EMPTY_CURRENCY}</TableCell>
         <TableCell>
           <StatusBadge status={payment.status}>{payment.status}</StatusBadge>
         </TableCell>
