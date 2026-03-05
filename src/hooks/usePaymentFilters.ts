@@ -22,13 +22,13 @@ export const usePaymentFilters = () => {
   const { totalPages, isLastPage, isFirstPage } = useMemo(() => {
     const total = cachedData?.total ?? 0;
     const size = filters.pageSize ?? defaultPaymentFilters.pageSize;
-    const pages = Math.ceil(total / size) || 1;
-    const current = filters.page ?? 1;
+    const pages = Math.ceil(total / size) || defaultPaymentFilters.page;
+    const current = filters.page ?? defaultPaymentFilters.page;
 
     return {
       totalPages: pages,
       isLastPage: current >= pages,
-      isFirstPage: current === 1,
+      isFirstPage: current === defaultPaymentFilters.page,
     };
   }, [cachedData?.total, filters.pageSize, filters.page]);
 
@@ -46,7 +46,7 @@ export const usePaymentFilters = () => {
       setFilters((previousFilters) => ({
         ...previousFilters,
         search,
-        page: 1,
+        page: defaultPaymentFilters.page,
       }));
     });
   };
@@ -56,7 +56,7 @@ export const usePaymentFilters = () => {
       setFilters((previousFilters) => ({
         ...previousFilters,
         currency,
-        page: 1,
+        page: defaultPaymentFilters.page,
       }));
     });
   };
@@ -64,7 +64,7 @@ export const usePaymentFilters = () => {
   const handlePageChange = (delta: number) => {
     startTransition(() => {
       setFilters((prev) => {
-        const currentPage = prev.page ?? 1;
+        const currentPage = prev.page ?? defaultPaymentFilters.page;
         const newPage = currentPage + delta;
 
         if (newPage < 1) return prev;
