@@ -19,6 +19,7 @@ import { usePayment } from '../hooks/usePayment';
 import { PaymentRows } from './PaymentRows';
 import { usePaymentFilters } from '../hooks/usePaymentFilters';
 import { PaymentErrors } from './PaymentErrors';
+import { CurrencyFilter } from './CurrencyFilter';
 
 export const PaymentsPage = () => {
   const {
@@ -27,6 +28,7 @@ export const PaymentsPage = () => {
     setSearch,
     resetFilters,
     handleSearch,
+    handleCurrency,
     isFilterApplied,
   } = usePaymentFilters();
   const { data, isLoading, isError, error } = usePayment(filters);
@@ -55,6 +57,8 @@ export const PaymentsPage = () => {
           <span id='search-hint' className='sr-only'>
             {I18N.SEARCH_PLACEHOLDER}
           </span>
+
+          <CurrencyFilter value={filters.currency} onChange={handleCurrency} />
 
           <SearchButton type='submit'>{I18N.SEARCH_BUTTON}</SearchButton>
 

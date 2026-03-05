@@ -1,10 +1,11 @@
-import { FormEvent, FormEventHandler, useDeferredValue, useState } from 'react';
-import { FetchPaymentsParams } from '../services/api/payments.types';
+import { FormEvent, useDeferredValue, useState } from 'react';
+import { Currency, FetchPaymentsParams } from '../services/api/payments.types';
 
 export const defaultPaymentFilters: FetchPaymentsParams = {
   page: 1,
   pageSize: 5,
   search: '',
+  currency: '',
 };
 
 // 1. Check if ANY filter is different from its default
@@ -15,6 +16,8 @@ const isAnyFilterApplied = (filters: FetchPaymentsParams) =>
       return filters.page !== defaultPaymentFilters.pageSize;
     if (key === 'search')
       return filters.search !== defaultPaymentFilters.search;
+    if (key === 'currency')
+      return filters.currency !== defaultPaymentFilters.currency;
 
     return false;
   });
@@ -24,6 +27,7 @@ export const usePaymentFilters = () => {
     page: 1,
     pageSize: 5,
     search: '',
+    currency: '',
   });
 
   const [search, setSearch] = useState('');
@@ -38,6 +42,10 @@ export const usePaymentFilters = () => {
     setFilters((previousFilters) => ({ ...previousFilters, search }));
   };
 
+  const handleCurrency = (currency: Currency) => {
+    setFilters((previousFilters) => ({ ...previousFilters, currency }));
+  };
+
   const resetFilters = () => {
     setSearch('');
     setFilters(defaultPaymentFilters);
@@ -48,6 +56,7 @@ export const usePaymentFilters = () => {
     isFilterApplied,
     setSearch,
     handleSearch,
+    handleCurrency,
     resetFilters,
   };
 };

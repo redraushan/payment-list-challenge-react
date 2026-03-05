@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import { CURRENCIES } from '../../constants';
 
 export type PaymentStatus = 'completed' | 'pending' | 'failed';
 
@@ -27,7 +28,7 @@ export interface PaginatedResponse<T> {
 
 export interface FetchPaymentsParams extends PaginationParams {
   search?: string;
-  currency?: Currency;
+  currency: Currency | '';
 }
 
 export interface FetchPaymentsResponse {
@@ -37,15 +38,7 @@ export interface FetchPaymentsResponse {
   pageSize: number;
 }
 
-export type Currency =
-  | 'USD'
-  | 'EUR'
-  | 'GBP'
-  | 'AUD'
-  | 'CAD'
-  | 'ZAR'
-  | 'JPY'
-  | 'CZK';
+export type Currency = (typeof CURRENCIES)[number];
 
 export interface ApiError {
   message: string;
