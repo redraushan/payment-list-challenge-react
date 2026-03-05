@@ -31,7 +31,6 @@ export const PaymentsPage = () => {
   } = usePaymentFilters();
   const { data, isLoading, isError, error } = usePayment(filters);
 
-  console.log({ isError, error });
   const payments = data?.payments;
 
   return (
@@ -67,9 +66,11 @@ export const PaymentsPage = () => {
         </FilterRow>
       </form>
 
-      {isError ? (
-        <PaymentErrors error={error} />
-      ) : (
+      <div role='alert' aria-live='assertive'>
+        {isError && <PaymentErrors error={error} />}
+      </div>
+
+      {!isError && (
         <TableWrapper>
           <Table>
             <TableHeaderWrapper>
