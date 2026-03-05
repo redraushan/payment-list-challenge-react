@@ -1,5 +1,7 @@
 import {
+  ClearButton,
   Container,
+  FilterRow,
   FlexRow,
   SearchButton,
   SearchInput,
@@ -14,24 +16,19 @@ import {
 } from './components';
 import { I18N } from '../constants/i18n';
 import { usePayment } from '../hooks/usePayment';
-import { useState, useDeferredValue } from 'react';
-import { FetchPaymentsParams } from '../services/api/payments.types';
 import { PaymentRows } from './PaymentRows';
+import { usePaymentFilters } from '../hooks/usePaymentFilters';
 
 export const PaymentsPage = () => {
-  const [filters, setFilters] = useState<FetchPaymentsParams>({
-    page: 1,
-    pageSize: 5,
-    search: '',
-  });
-
-  const [search, setSearch] = useState('');
-
-  // If the network/rendering is slow, this lags behind the raw filters
-  const deferredFilters = useDeferredValue(filters);
-
-  // 3. Fetch data using the DEFERRED filters
-  const { data, isLoading } = usePayment(deferredFilters);
+  const {
+    filters,
+    search,
+    setSearch,
+    resetFilters,
+    handleSearch,
+    isFilterApplied,
+  } = usePaymentFilters();
+  const { data, isLoading } = usePayment(filters);
 
   const payments = data?.payments;
 
@@ -39,28 +36,34 @@ export const PaymentsPage = () => {
     <Container>
       <Title>{I18N.PAGE_TITLE}</Title>
 
-      <FlexRow>
-        <label htmlFor='payment-search' className='sr-only'>
-          {I18N.SEARCH_LABEL}
-        </label>
-        <SearchInput
-          type='text'
-          id='payment-search'
-          name='payment-search'
-          role='searchbox'
-          aria-describedby='search-hint'
-          placeholder={I18N.SEARCH_PLACEHOLDER}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <span id='search-hint' className='sr-only'>
-          {I18N.SEARCH_PLACEHOLDER}
-        </span>
+      <form onSubmit={handleSearch}>
+        <FilterRow>
+          <label htmlFor='payment-search' className='sr-only'>
+            {I18N.SEARCH_LABEL}
+          </label>
+          <SearchInput
+            type='text'
+            id='payment-search'
+            name='payment-search'
+            role='searchbox'
+            aria-describedby='search-hint'
+            placeholder={I18N.SEARCH_PLACEHOLDER}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <span id='search-hint' className='sr-only'>
+            {I18N.SEARCH_PLACEHOLDER}
+          </span>
 
-        <SearchButton onClick={() => setFilters({ ...filters, search })}>
-          {I18N.SEARCH_BUTTON}
-        </SearchButton>
-      </FlexRow>
+          <SearchButton type='submit'>{I18N.SEARCH_BUTTON}</SearchButton>
+
+          {isFilterApplied && (
+            <ClearButton onClick={resetFilters}>
+              {I18N.CLEAR_FILTERS}
+            </ClearButton>
+          )}
+        </FilterRow>
+      </form>
 
       <TableWrapper>
         <Table>
