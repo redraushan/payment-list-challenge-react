@@ -17,7 +17,7 @@ export const PaymentErrors = ({ error }: PaymentErrorProps) => {
   if (status) {
     return (
       <ErrorBox id='payment-errors' tabIndex={0}>
-        {errorMessage.get(status)}
+        {errorMessage.get(status) || I18N.SOMETHING_WENT_WRONG}
       </ErrorBox>
     );
   }

@@ -10,6 +10,7 @@ interface CurrencyFilterProps {
 export const CurrencyFilter = ({ value, onChange }: CurrencyFilterProps) => {
   return (
     <Select
+      id='payments-currency-select'
       aria-label={I18N.CURRENCY_FILTER_LABEL}
       onChange={(e) => onChange(e.target.value as Currency)}
       value={value || I18N.EMPTY_CURRENCY}

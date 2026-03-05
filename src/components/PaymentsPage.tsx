@@ -28,6 +28,7 @@ export const PaymentsPage = () => {
   const {
     filters,
     search,
+    currency,
     setSearch,
     resetFilters,
     handleSearch,
@@ -39,11 +40,12 @@ export const PaymentsPage = () => {
     totalPages,
   } = usePaymentFilters();
 
-  const { data, isLoading, isFetched, isError, error } = usePayment(filters);
+  const { data, isLoading, isPending, isError, error } = usePayment(filters);
 
   const payments = data?.payments;
 
-  if (!isFetched) return null;
+  if (isPending) return <Spinner />;
+
   return (
     <Container>
       <Title>{I18N.PAGE_TITLE}</Title>
@@ -67,7 +69,7 @@ export const PaymentsPage = () => {
             {I18N.SEARCH_PLACEHOLDER}
           </span>
 
-          <CurrencyFilter value={filters.currency} onChange={handleCurrency} />
+          <CurrencyFilter value={currency} onChange={handleCurrency} />
 
           <SearchButton type='submit'>{I18N.SEARCH_BUTTON}</SearchButton>
 

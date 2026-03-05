@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { formattedDate } from './formattedDate';
 
-describe('formattedDate (Safe Version)', () => {
-  // Ensure consistent time results regardless of local timezone
+describe('formattedDate', () => {
   beforeAll(() => {
     vi.stubEnv('TZ', 'UTC');
   });

@@ -12,6 +12,7 @@ export const defaultPaymentFilters = {
 export const usePaymentFilters = () => {
   const [, startTransition] = useTransition();
   const [search, setSearch] = useState('');
+  const [currency, setCurrency] = useState<Currency | ''>('');
 
   const [filters, setFilters] = useState<FetchPaymentsParams>(
     defaultPaymentFilters,
@@ -46,6 +47,7 @@ export const usePaymentFilters = () => {
       setFilters((previousFilters) => ({
         ...previousFilters,
         search,
+        currency,
         page: defaultPaymentFilters.page,
       }));
     });
@@ -53,11 +55,7 @@ export const usePaymentFilters = () => {
 
   const handleCurrency = (currency: Currency) => {
     startTransition(() => {
-      setFilters((previousFilters) => ({
-        ...previousFilters,
-        currency,
-        page: defaultPaymentFilters.page,
-      }));
+      setCurrency(currency);
     });
   };
 
@@ -79,6 +77,7 @@ export const usePaymentFilters = () => {
 
   const resetFilters = () => {
     setSearch('');
+    setCurrency('');
     startTransition(() => {
       setFilters(defaultPaymentFilters);
     });
@@ -86,6 +85,7 @@ export const usePaymentFilters = () => {
   return {
     filters,
     search,
+    currency,
     isFilterApplied,
     isFirstPage,
     isLastPage,
