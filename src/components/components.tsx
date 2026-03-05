@@ -230,3 +230,5 @@ export const TableHeaderRow = styled.tr`
 export const TableBodyWrapper = styled.tbody`
   background-color: white;
 `;
+
+export const TableFooterWrapper = styled.tfoot``;

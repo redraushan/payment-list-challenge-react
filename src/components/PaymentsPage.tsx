@@ -2,12 +2,15 @@ import {
   ClearButton,
   Container,
   FilterRow,
+  PaginationButton,
+  PaginationRow,
   SearchButton,
   SearchInput,
   Spinner,
   Table,
   TableBodyWrapper,
   TableCell,
+  TableFooterWrapper,
   TableHeader,
   TableHeaderWrapper,
   TableRow,
@@ -29,12 +32,18 @@ export const PaymentsPage = () => {
     resetFilters,
     handleSearch,
     handleCurrency,
+    handlePageChange,
     isFilterApplied,
+    isFirstPage,
+    isLastPage,
+    totalPages,
   } = usePaymentFilters();
-  const { data, isLoading, isError, error } = usePayment(filters);
+
+  const { data, isLoading, isFetched, isError, error } = usePayment(filters);
 
   const payments = data?.payments;
 
+  if (!isFetched) return null;
   return (
     <Container>
       <Title>{I18N.PAGE_TITLE}</Title>
@@ -70,6 +79,7 @@ export const PaymentsPage = () => {
         </FilterRow>
       </form>
 
+      {/* For a11y live updates */}
       <div role='alert' aria-live='assertive'>
         {isError && <PaymentErrors error={error} />}
       </div>
@@ -99,6 +109,36 @@ export const PaymentsPage = () => {
                 <PaymentRows payments={payments} />
               )}
             </TableBodyWrapper>
+            <TableFooterWrapper>
+              <TableRow role='navigation'>
+                <TableCell colSpan={6} style={{ padding: 0 }}>
+                  <PaginationRow>
+                    <PaginationButton
+                      disabled={isFirstPage}
+                      onClick={() => handlePageChange(-1)}
+                    >
+                      {I18N.PREVIOUS_BUTTON}
+                    </PaginationButton>
+
+                    {/* For a11y live updates */}
+                    <p
+                      aria-live='polite'
+                      aria-atomic='true'
+                      className='sr-only'
+                    >
+                      {`Page ${filters.page} of ${totalPages}`}
+                    </p>
+                    <p>{`${I18N.PAGE_LABEL} ${filters.page}`} </p>
+                    <PaginationButton
+                      disabled={isLastPage}
+                      onClick={() => handlePageChange(1)}
+                    >
+                      {I18N.NEXT_BUTTON}
+                    </PaginationButton>
+                  </PaginationRow>
+                </TableCell>
+              </TableRow>
+            </TableFooterWrapper>
           </Table>
         </TableWrapper>
       )}

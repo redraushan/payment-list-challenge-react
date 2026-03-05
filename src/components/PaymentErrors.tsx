@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import { I18N } from '../constants/i18n';
 import { FetchPaymentError } from '../services/api/payments.types';
 import { ErrorBox } from './components';
@@ -12,7 +11,7 @@ const errorMessage = new Map([
   [500, I18N.INTERNAL_SERVER_ERROR],
 ]);
 
-export const PaymentErrors = forwardRef(({ error }: PaymentErrorProps) => {
+export const PaymentErrors = ({ error }: PaymentErrorProps) => {
   const status = error?.response?.status;
 
   if (status) {
@@ -22,4 +21,4 @@ export const PaymentErrors = forwardRef(({ error }: PaymentErrorProps) => {
       </ErrorBox>
     );
   }
-});
+};
