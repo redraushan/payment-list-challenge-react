@@ -34,11 +34,10 @@ export const usePaymentFilters = () => {
   }, [cachedData?.total, filters.pageSize, filters.page]);
 
   const isFilterApplied = useMemo(() => {
-    return Object.keys(filters).some((key) => {
-      const k = key as keyof FetchPaymentsParams;
-
-      return filters[k] !== defaultPaymentFilters[k];
-    });
+    return (
+      filters.search !== defaultPaymentFilters.search ||
+      filters.currency !== defaultPaymentFilters.currency
+    );
   }, [filters]);
 
   const handleSearch = (event: FormEvent) => {
